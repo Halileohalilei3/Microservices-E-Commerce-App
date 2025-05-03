@@ -8,6 +8,7 @@ const {connectToDB,getDB} = require("./config/database");
 const {userRoute} = require("../routes/userRoute");
 const {authRoute} = require("../routes/authRoute");
 const {PORT,RATE_LIMIT} = require("../config/config");
+const expressSanitizer = require("express-sanitizer");
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use(rateLimit(RATE_LIMIT));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(expressSanitizer());
 app.use(morgan('dev'));
 
 connectToDB()
