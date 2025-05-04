@@ -2,4 +2,4 @@ user-service/node_modules
 user-service/.env
 product-service/.env
 product-service/node_modules
-user-service/secrets
+user-service/secrets/private.pem

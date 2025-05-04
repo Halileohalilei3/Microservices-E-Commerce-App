@@ -157,5 +157,6 @@ const getJWKS = async (req, res) => {
 
 module.exports = {
     signInHandler,
-    signUpHandler
+    signUpHandler,
+    getJWKS
 }
