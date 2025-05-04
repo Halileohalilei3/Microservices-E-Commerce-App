@@ -15,3 +15,7 @@ adminProductOpsRouter.use(checkAuthorization("admin"));
 adminProductOpsRouter.post("/create-product",limiter,createProduct);
 adminProductOpsRouter.get("/get-product-details/:id",limiter,getProductDetails);
 
+module.exports = {
+    adminProductOpsRouter
+}
+

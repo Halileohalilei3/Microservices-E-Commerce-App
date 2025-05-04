@@ -6,6 +6,8 @@ const rateLimit = require("express-rate-limit");
 const {connectToDB,getDB} = require("./config/database");
 const {PORT,RATE_LIMIT} = require("../config/config");
 const expressSanitizer = require("express-sanitizer");
+const {adminProductOpsRouter} = require("./routes/adminProductOpsRoute");
+const {customerProductOpsRouter} = require("./routes/customerProductOpsRoute");
 
 const app = express();
 
@@ -33,8 +35,8 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK', db: getDB()?.readyState === 1 ? 'connected' : 'disconnected' });
 });
 
-app.use("product-service/api/admin",adminProductOpsRoute);
-app.use("product-service/api/customer",customerProductOpsRoute);
+app.use("product-service/api/admin",adminProductOpsRouter);
+app.use("product-service/api/customer",customerProductOpsRouter);
 
 app.use((req,res) => {
     res.status(404).json({
