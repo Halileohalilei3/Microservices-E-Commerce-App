@@ -23,7 +23,7 @@ const requireAuth = async (req,res,next) => {
         //Finding the user with given id taken from the token AND assigning it to the req parameters 
         //      so that it can be used in other functions
         req.user = await User.findOne({ _id }).select("_id");
-        
+        req.role = await User.findOne({ _id }).select("role");
         next();
         
     }catch (error){

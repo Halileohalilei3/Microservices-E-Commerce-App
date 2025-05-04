@@ -2,10 +2,21 @@ const {User} = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const {JWTSECRET} = require("../config/config");
+const {JWT_PRIVATE_KEY,JWT_PUBLIC_KEY} = require("../config/config");
+const jose = require("jose");
 
-const createToken = (_id) => {
-    return jwt.sign({_id}, JWTSECRET, {expiresIn: "60d"});
+
+const createToken = (userId,role) => {
+    return jwt.sign(
+        { userId, role },            
+        JWT_PRIVATE_KEY,                 
+        {
+          algorithm: 'RS256',
+          issuer: 'http://localhost:3001/user-service',
+          audience: 'internal-services',
+          expiresIn: '7d'
+        }
+    );
 }
 
 const signUpHandler = async (req,res) => {
@@ -53,11 +64,12 @@ const signUpHandler = async (req,res) => {
             username,
             email,
             password,
+            role
         })
         
         await newUser.save();
 
-        const token = createToken(newUser._id);
+        const token = createToken(newUser._id,newUser.role);
 
         return res.status(201).json({
             message : "User Registration is successfull.",
@@ -130,6 +142,18 @@ const signInHandler = async (req,res) => {
         })
     }
 }
+
+
+const getJWKS = async (req, res) => {
+    try {
+      const keyStore = jose.JWK.createKeyStore();
+      const key = await keyStore.add(JWT_PUBLIC_KEY, 'pem');
+      return res.json({ keys: [key.toJSON()] });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
 
 module.exports = {
     signInHandler,

@@ -1,5 +1,5 @@
 const express = require("express");
-const {signInHandler,signUpHandler} = require("../controllers/authController");
+const {signInHandler,signUpHandler,sendPublicKey} = require("../controllers/authController");
 const rateLimit = require('express-rate-limit');
 const { requireAuth } = require("../middleware/requireAuth");
 const authRouter = express.Router();
@@ -14,6 +14,7 @@ authRouter.use(limiter);
 authRouter.post("/signup",signUpHandler);
 authRouter.post("/signin",limiter,signInHandler);
 authRouter.get("/get-auth/:id",requireAuth);
+authRouter.get("/get-public-key",sendPublicKey);
 
 authRouter.all('*', (req, res) => {
     res.status(405).json({ 

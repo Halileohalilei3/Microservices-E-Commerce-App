@@ -32,6 +32,12 @@ const userSchema = new Schema({
         type : String,
         required : true,
     },
+    role: {
+      type: String,
+      enum: ['admin','customer'],
+      default: 'customer',
+      required: true
+    },
     profilePhoto : {
         type : String,
         default : ""
