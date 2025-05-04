@@ -65,5 +65,6 @@ const checkAuthorization = async (req,res,next,roleOP) => {
 }
 
 module.exports = {
-    checkAuthorization
+    checkAuthorization,
+    getUser
 }

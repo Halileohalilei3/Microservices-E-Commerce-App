@@ -29,6 +29,10 @@ const productSchema = new Schema({
         min: 0,
         max: 5
     },
+    productCategory : {
+        type : String,
+        required : true
+    },
     createdAt : {
         type : Date,
         default : Date.now()
@@ -36,6 +40,9 @@ const productSchema = new Schema({
     updatedAt : {
         type : Date,
         default : Date.now()
+    },
+    createdBy : {
+        type : mongoose.Types.ObjectId,
     }
 });
 
