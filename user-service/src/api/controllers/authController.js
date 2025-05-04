@@ -2,9 +2,10 @@ const {User} = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const {JWTSECRET} = require("../config/config");
 
 const createToken = (_id) => {
-    return jwt.sign({_id}, process.env.TOKEN_SECRET, {expiresIn: "60d"});
+    return jwt.sign({_id}, JWTSECRET, {expiresIn: "60d"});
 }
 
 const signUpHandler = async (req,res) => {

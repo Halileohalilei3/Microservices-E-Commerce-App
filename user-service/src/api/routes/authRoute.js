@@ -1,6 +1,7 @@
 const express = require("express");
 const {signInHandler,signUpHandler} = require("../controllers/authController");
 const rateLimit = require('express-rate-limit');
+const { requireAuth } = require("../middleware/requireAuth");
 const authRouter = express.Router();
 
 const limiter = rateLimit({
@@ -12,6 +13,7 @@ const limiter = rateLimit({
 authRouter.use(limiter);
 authRouter.post("/signup",signUpHandler);
 authRouter.post("/signin",limiter,signInHandler);
+authRouter.get("/get-auth/:id",requireAuth);
 
 authRouter.all('*', (req, res) => {
     res.status(405).json({ 
