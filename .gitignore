@@ -1,5 +1,7 @@
 user-service/node_modules
 user-service/.env
+user-service/src/api/secrets
 product-service/.env
 product-service/node_modules
-user-service/secrets/private.pem
+menu-service/.env
+menu-service/node_modules

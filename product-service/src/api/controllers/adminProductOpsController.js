@@ -60,7 +60,6 @@ const createProduct = async (req, res) => {
 const getProductDetails = async (req,res) => {
     try {
         const product_id = req.params.id;
-        const sender_id = req.user._id;
 
         if(!product_id){
             return res.status(400).json({
@@ -68,7 +67,7 @@ const getProductDetails = async (req,res) => {
             })
         }
 
-        const product = await Product.findById(product_id).select("-createdAt -updatedAt");
+        const product = await Product.findById(product_id)
 
         if(!product){
             return res.status(404).json({
@@ -97,6 +96,8 @@ const getProductDetails = async (req,res) => {
                 category : product.productCategory,
                 preparationtime : product.preparationTimeInMinutes,
                 ingredients : product.ingredients,
+                createdAt : product.createdAt,
+                updatedAt : product.updatedAt,
                 weight : product.weightInGrams,
             }
         }else if(product.__t === "beverageProduct"){
@@ -110,6 +111,8 @@ const getProductDetails = async (req,res) => {
                 image : product.imageUrl,
                 rating : product.rating,
                 category : product.productCategory,
+                createdAt : product.createdAt,
+                updatedAt : product.updatedAt,
                 volume : product.volume
             }
         }

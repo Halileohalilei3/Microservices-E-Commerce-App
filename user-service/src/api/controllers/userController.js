@@ -112,7 +112,7 @@ const addPhoneNumber = async (req,res) => {
 const sendUser = async (req,res) => {
     const { id } = req.params;
     try {
-      const user = await User.findById(id).lean().select("_id role");
+      const user = await User.findById(id).lean().select("_id username firstName lastName role");
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       } 
