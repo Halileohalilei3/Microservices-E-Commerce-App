@@ -1,5 +1,11 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
+class ServiceError extends Error {
+    constructor(message, statusCode) {
+      super(message);
+      this.statusCode = statusCode;
+    }
+}
 
 const getPublicKey = async () => {
     try {
@@ -13,18 +19,27 @@ const getPublicKey = async () => {
     }
 };
 
-
 const getUser = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:3001/user-service/api/user/get-user/${id}`);
-      const user = response.data;
-      console.log("User:", user);
-      return user;
+      const response = await axios.get(`http://localhost:4001/user-service/api/user/get-user/${id}`);
+      return response.data;
     } catch (error) {
-        console.error("Failed to fetch user:", error.message);
-        throw error;  
+      
+      if (error.response) {
+        const { status, data } = error.response;
+        throw new ServiceError(
+          data.message || "Service error",
+          status
+        );
+      }
+      
+      console.error("User Service unreachable:", error.message);
+      throw new ServiceError(
+        "Unable to contact to the Service",
+        502 
+      );
     }
-}
+  };
 
 const checkAuthorization = async (req,res,next,roleOP) => {
     const {authorization} = req.headers;
@@ -66,5 +81,6 @@ const checkAuthorization = async (req,res,next,roleOP) => {
 
 module.exports = {
     checkAuthorization,
-    getUser
+    getUser,
+    ServiceError
 }

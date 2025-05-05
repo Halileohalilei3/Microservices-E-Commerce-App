@@ -6,6 +6,7 @@ const rateLimit = require("express-rate-limit");
 const {connectToDB,getDB} = require("./config/database");
 const {PORT,RATE_LIMIT} = require("../config/config");
 const expressSanitizer = require("express-sanitizer");
+const {customerMenuOpsRouter} = require("./routes/customerMenuRoute");
 
 const app = express();
 
@@ -33,7 +34,7 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK', db: getDB()?.readyState === 1 ? 'connected' : 'disconnected' });
 });
 
-
+app.use("menu-service/api/customer",customerMenuOpsRouter);
 
 app.use((req,res) => {
     res.status(404).json({
