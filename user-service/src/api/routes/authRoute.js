@@ -1,5 +1,5 @@
 const express = require("express");
-const {signInHandler,signUpHandler,getJWKS} = require("../controllers/authController");
+const {signInHandler,signUpHandler} = require("../controllers/authController");
 const rateLimit = require('express-rate-limit');
 const { requireAuth } = require("../middleware/requireAuth");
 const authRouter = express.Router();
@@ -10,17 +10,13 @@ const limiter = rateLimit({
     message: 'Too many attempts. Please try again later.'
 });
 
-authRouter.use(limiter);
+//authRouter.use(limiter);
 authRouter.post("/signup",signUpHandler);
-authRouter.post("/signin",limiter,signInHandler);
+authRouter.post("/signin",signInHandler);
 authRouter.get("/get-auth/:id",requireAuth);
-authRouter.get("/get-public-key",getJWKS);
+//authRouter.get("/get-public-key",getJWKS);
 
-authRouter.all('*', (req, res) => {
-    res.status(405).json({ 
-        message: 'Method not allowed' 
-    });
-});
+
 
 module.exports = {
     authRouter,

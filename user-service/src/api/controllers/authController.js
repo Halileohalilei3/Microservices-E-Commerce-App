@@ -2,14 +2,14 @@ const {User} = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const {JWT_PRIVATE_KEY,JWT_PUBLIC_KEY} = require("../config/config");
-const jose = require("jose");
+const {config} = require("../config/config");
+//const jose = require("jose");
 
 
 const createToken = (userId,role) => {
     return jwt.sign(
-        { userId, role },            
-        JWT_PRIVATE_KEY,                 
+        { userId, role , sub: userId},            
+        config.JWT_PRIVATE_KEY,                 
         {
           algorithm: 'RS256',
           issuer: 'http://localhost:3001/user-service',
@@ -20,7 +20,7 @@ const createToken = (userId,role) => {
 }
 
 const signUpHandler = async (req,res) => {
-    const {firstName,lastName,username,email,password} = req.body;
+    const {firstName,lastName,username,email,password,role} = req.body;
 
     try {
         if(!firstName || !lastName || !username || !email || !password){
@@ -36,10 +36,11 @@ const signUpHandler = async (req,res) => {
         }
 
         const [existingEmail,existingUsername] = await Promise.all([
-            User.findOne({email}),
-            User.findOne({username})
+            User.findOne({email : email}),
+            User.findOne({username : username})
         ]);
-
+        //console.log(existingEmail);
+        //console.log(existingUsername);
         if(existingEmail){
             return res.status(409).json({
                 message : "Email in use."
@@ -64,7 +65,7 @@ const signUpHandler = async (req,res) => {
             username,
             email,
             password,
-            role
+            role : role
         })
         
         await newUser.save();
@@ -143,7 +144,7 @@ const signInHandler = async (req,res) => {
     }
 }
 
-
+/*
 const getJWKS = async (req, res) => {
     try {
       const keyStore = jose.JWK.createKeyStore();
@@ -154,9 +155,9 @@ const getJWKS = async (req, res) => {
       return res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-
+*/
 module.exports = {
     signInHandler,
     signUpHandler,
-    getJWKS
+    //getJWKS
 }

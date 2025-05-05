@@ -3,12 +3,14 @@ const fs   = require('fs');
 const path = require('path');
 
 const PRIVATE_KEY_PATH = path.resolve(
-    __dirname,                
+    __dirname,
+    ".." ,               
     process.env.JWT_PRIVATE_KEY  
 );
 
 const PUBLIC_KEY_PATH = path.resolve(
-    __dirname,                
+    __dirname,
+    ".." ,                
     process.env.JWT_PUBLIC_KEY  
 );
 const PRIVATE_KEY = fs.readFileSync(PRIVATE_KEY_PATH, 'utf8');

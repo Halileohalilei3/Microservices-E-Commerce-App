@@ -239,7 +239,8 @@ const deleteMenu = async (req, res) => {
         message: "Internal Server Error" 
       });
     }
-  };
+};
+
 module.exports = {
     createMenu,
     getMenuDetails,

@@ -51,7 +51,7 @@ const userSchema = new Schema({
           message: props => `${props.value} is not a valid phone number!`
         }
     },
-    addresses: [{
+    address: [{
         type: {
           street: { type: String, required: true },
           city: { type: String, required: true },

@@ -6,8 +6,8 @@ const rateLimit = require("express-rate-limit");
 const {connectToDB,getDB} = require("./config/database");
 const {PORT,RATE_LIMIT} = require("../config/config");
 const expressSanitizer = require("express-sanitizer");
-const {customerMenuOpsRouter} = require("./routes/customerMenuRoute");
-const { internalServiceRouter } = require("./routes/internalServiceRoute");
+const {orderOpsRouter} = require("./routes/orderOpsRoute");
+
 
 const app = express();
 
@@ -35,8 +35,8 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK', db: getDB()?.readyState === 1 ? 'connected' : 'disconnected' });
 });
 
-app.use("menu-service/api/customer",customerMenuOpsRouter);
-app.use("menu-service/inter-service",internalServiceRouter);
+app.use("order-service/api/customer/create-order",orderOpsRouter);
+
 app.use((req,res) => {
     res.status(404).json({
         message : "Route not found"

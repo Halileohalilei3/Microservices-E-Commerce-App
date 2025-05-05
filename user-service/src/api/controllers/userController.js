@@ -11,7 +11,7 @@ const addUserAddress = async (req,res) => {
             })
         }
 
-        const user = await User.findById({sender_id}).select("addresses updatedAt");
+        const user = await User.findById(sender_id).select("address updatedAt");
 
         if(!user){
             return res.status(404).json({
@@ -23,11 +23,11 @@ const addUserAddress = async (req,res) => {
             street : address.street.trim(),
             city : address.city.trim(),
             state : address.state.trim(),
-            postalCode : address.postalCode().toString().trim(),
+            postalCode : address.postalCode.toString().trim(),
             country : address.country.trim(), 
             isDefault: address.isDefault || false
         }
-
+        /*
         if (newAddress.isDefault) {
             // Reset all other addresses to non-default
             user.addresses.forEach(addr => { addr.isDefault = false; });
@@ -35,8 +35,8 @@ const addUserAddress = async (req,res) => {
             // First address should default to true
             newAddress.isDefault = true;
         }
-
-        user.addresses.push(newAddress);
+        */
+        user.address.push(newAddress);
         user.updatedAt = new Date();
 
         await user.save();
