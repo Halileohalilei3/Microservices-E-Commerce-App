@@ -35,7 +35,7 @@ const createProduct = async (req, res) => {
           productName : productName,
           description : description,
           price : price,
-          productType,
+          productCategory : productCategory,
           volume,
           createdBy: sender_id
         });

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const { Double } = require("mongodb");
+const {menuItemSchema} = require("./menuItemModel");
 
 const menuSchema = new Schema({
     ownerId:{ 
@@ -9,7 +10,7 @@ const menuSchema = new Schema({
         required: true 
     },     
     items: [ 
-        MenuItemSchema 
+        menuItemSchema 
     ],
     status:{ 
         type: String, 

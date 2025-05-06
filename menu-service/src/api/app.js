@@ -4,7 +4,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const {connectToDB,getDB} = require("./config/database");
-const {PORT,RATE_LIMIT} = require("../config/config");
+const {config} = require("./config/config");
 const expressSanitizer = require("express-sanitizer");
 const {customerMenuOpsRouter} = require("./routes/customerMenuRoute");
 const { internalServiceRouter } = require("./routes/internalServiceRoute");
@@ -14,7 +14,7 @@ const app = express();
 app.use(helmet());
 app.use(cors())
 
-app.use(rateLimit(RATE_LIMIT));
+app.use(rateLimit(config.RATE_LIMIT));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,8 +35,8 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK', db: getDB()?.readyState === 1 ? 'connected' : 'disconnected' });
 });
 
-app.use("menu-service/api/customer",customerMenuOpsRouter);
-app.use("menu-service/inter-service",internalServiceRouter);
+app.use("/menu-service/api/customer",customerMenuOpsRouter);
+app.use("/menu-service/inter-service",internalServiceRouter);
 app.use((req,res) => {
     res.status(404).json({
         message : "Route not found"
@@ -50,6 +50,6 @@ app.use((err, req, res) => {
     }); 
 });
 
-app.listen(PORT, () => {
-    console.log(`Product service running on http://localhost:${PORT}`);
+app.listen(config.PORT, () => {
+    console.log(`Product service running on http://localhost:${config.PORT}`);
 });

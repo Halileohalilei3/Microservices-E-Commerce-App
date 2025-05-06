@@ -1,5 +1,5 @@
 const {Menu} = require("../models/menuModel");
-const {getUser,ServiceError} = require("../middleware/getUser");
+const {getUser,ServiceError} = require("../middleware/checkAuth");
 const axios = require("axios");
 
 const getProductDetails = async (items) => {
@@ -31,7 +31,7 @@ const getProductDetails = async (items) => {
 
 const createMenu = async (req,res) => {
     try {
-        const sender_id = req.user._id;
+        const sender_id = req.user;
         const {items} = req.body;
 
 
@@ -43,7 +43,7 @@ const createMenu = async (req,res) => {
 
 
         const products = await getProductDetails(items);
-        let totalPrice;
+        let totalPrice = 0;
         const menuItems = products.map(product => {
             const matchedItem = items.find(i => i.productId === product._id.toString());
             const quantity = matchedItem.quantity;
