@@ -81,6 +81,8 @@ services:
       - JWT_PRIVATE_KEY=src/api/secrets/private.pem
       - JWT_PUBLIC_KEY=src/api/secrets/public.pem
       - NODE_ENV=development
+    volumes:
+      - ./user-service/src:/app/src
 
   product-service:
     build:
@@ -99,6 +101,8 @@ services:
       - PORT=4002
       - MONGO_URI=mongodb://root:rootpassword@mongodb-product:27017/product-service-db?authSource=admin
       - NODE_ENV=development
+    volumes:
+      - ./product-service/src:/app/src
 
   menu-service:
     build:
@@ -118,6 +122,8 @@ services:
       - PORT=4003
       - MONGO_URI=mongodb://root:rootpassword@mongodb-menu:27017/menu-service-db?authSource=admin
       - NODE_ENV=development
+    volumes:
+      - ./menu-service/src:/app/src
 
   order-service:
     build:
@@ -137,6 +143,8 @@ services:
       - PORT=4004
       - MONGO_URI=mongodb://root:rootpassword@mongodb-order:27017/order-service-db?authSource=admin
       - NODE_ENV=development
+    volumes:
+      - ./order-service/src:/app/src
 
 # Ağlar
 networks:

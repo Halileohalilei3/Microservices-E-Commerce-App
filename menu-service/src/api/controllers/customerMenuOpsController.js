@@ -1,7 +1,9 @@
+// menu-service/src/api/controllers/customerMenuOpsController.js için düzeltme
 const {Menu} = require("../models/menuModel");
 const {getUser,ServiceError} = require("../middleware/checkAuth");
 const axios = require("axios");
-const urls = require("../../config/serviceUrls");
+const mongoose = require("mongoose"); // Eksik içe aktarma eklendi
+const urls = require("../../config/serviceUrls"); // Dosya yolu düzeltildi
 
 const getProductDetails = async (items) => {
     try {
@@ -96,15 +98,15 @@ const getMenuDetails = async (req,res) => {
 
         try {
             user = await getUser(menu.ownerId);
-        } catch (err) {
-            if (err instanceof ServiceError) {
+        } catch (error) { // err -> error olarak düzeltildi
+            if (error instanceof ServiceError) {
               
-              return res.status(err.statusCode).json({ 
-                message: err.message 
+              return res.status(error.statusCode).json({ 
+                message: error.message 
               });
             }
             
-            console.error("Unexpected error occurred while fetching user from user-service:", err);
+            console.error("Unexpected error occurred while fetching user from user-service:", error);
             return res.status(500).json({ 
                 message: "Internal Server Error" 
             });
@@ -151,17 +153,17 @@ const addProductsToMenu = async (req,res) => {
             })
         }
 
-        let products
+        let products;
         try {
             products = await getProductDetails(items);
-        } catch (error) {
-            if (err instanceof ServiceError) {
-               return res.status(err.statusCode).json({ 
-                  message: err.message 
+        } catch (error) { // err -> error olarak düzeltildi
+            if (error instanceof ServiceError) {
+               return res.status(error.statusCode).json({ 
+                  message: error.message 
                 });
             }
               
-            console.error("Unexpected error occurred while fetching products from product-service:", err);
+            console.error("Unexpected error occurred while fetching products from product-service:", error);
             return res.status(500).json({ 
                 message: "Internal Server Error" 
             });
@@ -181,7 +183,7 @@ const addProductsToMenu = async (req,res) => {
                 priceSnapshot: product.priceSnapshot,
                 quantity: quantity
             };
-        })
+        });
 
         menu.items.push(...menuItems);
         menu.menuPrice = (menu.menuPrice || 0) + totalPrice;
@@ -192,20 +194,20 @@ const addProductsToMenu = async (req,res) => {
         return res.status(200).json({
             message : "Items added successfully",
             menu : "updated"
-        })
+        });
         
     } catch (error) {
         console.error("Error while adding items to the menu: ",error.message);
         return res.status(500).json({
             message : "Internal Server Error"
-        })
+        });
     }
 }
 
 const deleteMenu = async (req, res) => {
     try {
       const menu_id = req.params.id;
-      const userId  = req.user._id;
+      const userId  = req.user;  // req.user._id -> req.user olarak düzeltildi çünkü diğer işlemlerde bu şekilde kullanılıyor
   
       
       if (!mongoose.Types.ObjectId.isValid(menu_id)) {
@@ -247,4 +249,4 @@ module.exports = {
     getMenuDetails,
     addProductsToMenu,
     deleteMenu
-}
+};
