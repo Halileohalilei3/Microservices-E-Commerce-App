@@ -11,10 +11,10 @@ const limiter = rateLimit({
 
 customerMenuOpsRouter.use(checkAuthorization("customer"));
 
-customerMenuOpsRouter.post("/create-menu",limiter,createMenu);
-customerMenuOpsRouter.get("/get-menu-details/:id",limiter,getMenuDetails);
-customerMenuOpsRouter.patch("/add-products-to-menu/:id",limiter,addProductsToMenu);
-customerMenuOpsRouter.delete("/delete-menu/:id",limiter,deleteMenu);
+customerMenuOpsRouter.post("/create-menu",createMenu);
+customerMenuOpsRouter.get("/get-menu-details/:id",getMenuDetails);
+customerMenuOpsRouter.patch("/add-products-to-menu/:id",addProductsToMenu);
+customerMenuOpsRouter.delete("/delete-menu/:id",deleteMenu);
 
 module.exports = {
     customerMenuOpsRouter

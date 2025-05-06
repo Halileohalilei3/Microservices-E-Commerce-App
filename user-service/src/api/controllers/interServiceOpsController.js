@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User= require('../models/userModel'); // adjust path as needed
+const {User}= require('../models/userModel'); 
 
 const sendUserAddress = async (req, res) => {
   try {
@@ -11,9 +11,9 @@ const sendUserAddress = async (req, res) => {
     }
 
     
-    const user = await User.findById(user_id)
-      .select("addresses")
-      .lean();
+    const user = await User.findById(user_id).select("address");
+      
+
 
     
     if (!user) {
@@ -21,7 +21,7 @@ const sendUserAddress = async (req, res) => {
     }
 
     
-    return res.status(200).json({ addresses: user.addresses });
+    return res.status(200).json({ address: user.address });
 
   } catch (error) {
     console.error("sendUserAddress error:", error);

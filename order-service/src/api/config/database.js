@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const {MONGOURI} = require("./config");
+const {config} = require("./config");
 
 let dbConnection;
 
@@ -8,12 +8,12 @@ async function connectToDB() {
     try {
         mongoose.set("strictQuery",false);
 
-        dbConnection = await mongoose.connect(MONGOURI, {
+        dbConnection = await mongoose.connect(config.MONGOURI, {
             serverSelectionTimeoutMS : 5000,
             maxPoolSize : 10,
-            maxIdleTimeMS
         });
-
+        
+        /*
         dbConnection.on("error", (error) => {
             console.error("Database Connection Error",error);
 
@@ -26,8 +26,8 @@ async function connectToDB() {
             console.log("Database Disconnected. Reconnecting...");
             setTimeout(connectToDB,3000);
         });
-
-        console.log("Database Connection Successfull");
+        */
+        
         return dbConnection;
 
     } catch (error) {

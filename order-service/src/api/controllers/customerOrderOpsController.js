@@ -3,7 +3,7 @@ const {getMenuDetails,ServiceError,getUserAddress} = require("./internalServiceO
 const mongoose = require("mongoose");
 const createOrder = async (req,res) => {
     try {
-        const sender_id = req.user._id;
+        const sender_id = req.user;
         const menu_id = req.params.id;
 
         if(!menu_id) {
@@ -14,16 +14,16 @@ const createOrder = async (req,res) => {
 
         let address
         try {
-            address = getUserAddress(sender_id);
+            address = await getUserAddress(sender_id);
         } catch (error) {
-            if (err instanceof ServiceError) {
+            if (error instanceof ServiceError) {
               
-                return res.status(err.statusCode).json({ 
-                  message: err.message 
+                return res.status(error.statusCode).json({ 
+                  message: error.message 
                 });
             }
               
-            console.error("Unexpected error occurred while fetching menu data from menu-service:", err);
+            console.error("Unexpected error occurred while fetching menu data from menu-service:", error);
             return res.status(500).json({ 
                 message: "Internal Server Error" 
             });
@@ -31,15 +31,16 @@ const createOrder = async (req,res) => {
         let menu
         try {
             menu = await getMenuDetails(menu_id);
+            console.log("Menu to create order: ",menu);
         } catch (error) {
-            if (err instanceof ServiceError) {
+            if (error instanceof ServiceError) {
               
-                return res.status(err.statusCode).json({ 
-                  message: err.message 
+                return res.status(error.statusCode).json({ 
+                  message: error.message 
                 });
             }
               
-              console.error("Unexpected error occurred while fetching menu data from menu-service:", err);
+              console.error("Unexpected error occurred while fetching menu data from menu-service:", error);
               return res.status(500).json({ 
                   message: "Internal Server Error" 
               });
@@ -48,15 +49,16 @@ const createOrder = async (req,res) => {
         if (menu.ownerId !== sender_id) {
             return res.status(403).json({ message: "You can only order your own menu" });
         }
-
+        /*
         if (menu.status !== 'ordered') {
             return res.status(400).json({ message: "Menu must be finalized before ordering" });
         }
-
+        */
         const order = await Order.create({
-            ownerId:         mongoose.Types.ObjectId(userId),
-            menuId:          mongoose.Types.ObjectId(menuId),
-            shippingAddress : address,
+            ownerId:  sender_id,
+            menuId:   menu_id,
+            orderItems : menu.items,
+            shippingAddress : address[0],
             totalPrice:      menu.menuPrice
         });
 
@@ -68,7 +70,7 @@ const createOrder = async (req,res) => {
         });
         
     } catch (error) {
-        console.error("Error while creating Order");
+        console.error("Error while creating Order: ",error.message);
         return res.status(500).json({
             message : "Internal Server Error"
         })

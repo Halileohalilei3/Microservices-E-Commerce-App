@@ -14,7 +14,7 @@ const app = express();
 app.use(helmet());
 app.use(cors())
 
-app.use(rateLimit(config.RATE_LIMIT));
+//app.use(rateLimit(config.RATE_LIMIT));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -51,5 +51,5 @@ app.use((err, req, res) => {
 });
 
 app.listen(config.PORT, () => {
-    console.log(`Product service running on http://localhost:${config.PORT}`);
+    console.log(`Menu service running on http://localhost:${config.PORT}`);
 });

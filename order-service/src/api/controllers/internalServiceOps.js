@@ -31,12 +31,12 @@ const getMenuDetails = async (id) => {
     }
 }
 
-const getUserAddress = async (req,res) => {
+const getUserAddress = async (id) => {
     try {
         const response = await axios.get(`http://localhost:4001/user-service/inter-service/get-user-address/${id}`)
 
         const address = response.data;
-
+        console.log("Address information taken from User Service: ",address);
         return address;
     } catch (error) {
         if (error.response) {
@@ -49,7 +49,7 @@ const getUserAddress = async (req,res) => {
           
           console.error("Service unreachable:", error.message);
           throw new ServiceError(
-            "Unable to contact to the Service",
+            "Unable to contact to the User Service",
             502 
           );
     }
