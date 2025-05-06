@@ -1,4 +1,6 @@
 const axios = require("axios");
+const urls = require("../../config/serviceUrls");
+
 class ServiceError extends Error {
     constructor(message, statusCode) {
       super(message);
@@ -8,7 +10,7 @@ class ServiceError extends Error {
 
 const getMenuDetails = async (id) => {
     try {
-        const response = await axios.get(`http://localhost:4003/menu-service/inter-service/send-menu/${id}`)
+        const response = await axios.get(`${urls.menuService}/menu-service/inter-service/send-menu/${id}`)
 
         const menu = response.data;
 
@@ -33,7 +35,7 @@ const getMenuDetails = async (id) => {
 
 const getUserAddress = async (id) => {
     try {
-        const response = await axios.get(`http://localhost:4001/user-service/inter-service/get-user-address/${id}`)
+        const response = await axios.get(`${urls.userService}/user-service/inter-service/get-user-address/${id}`)
 
         const address = response.data;
         console.log("Address information taken from User Service: ",address);
@@ -60,5 +62,3 @@ module.exports = {
     getUserAddress,
     ServiceError
 }
-
-

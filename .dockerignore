@@ -1,0 +1,35 @@
+# Geliştirme ortamı dosyaları
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Geçici dosyalar
+*.log
+*.tmp
+.DS_Store
+.idea
+.vscode
+
+# Veritabanı dosyaları
+data
+*.dump
+
+# Ortam değişkenleri (Docker Compose tarafından üzerine yazılacak)
+*.env
+
+# Git dosyaları
+.git
+.gitignore
+.gitattributes
+
+# Gereksiz belge dosyaları
+README.md
+LICENSE
+CHANGELOG.md
+docs
+
+# Docker dosyaları - bunları kopyalamayı önler
+Dockerfile*
+docker-compose*
+*.dockerignore

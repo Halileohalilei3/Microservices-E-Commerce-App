@@ -1,10 +1,11 @@
 const {Menu} = require("../models/menuModel");
 const {getUser,ServiceError} = require("../middleware/checkAuth");
 const axios = require("axios");
+const urls = require("../../config/serviceUrls");
 
 const getProductDetails = async (items) => {
     try {
-        const response = await axios.post('http://localhost:4002/product-service/inter-service/bulk-fetch-products', {
+        const response = await axios.post(`${urls.productService}/product-service/inter-service/bulk-fetch-products`, {
             items: items
         });
 

@@ -1,27 +1,17 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
+const urls = require("../../config/serviceUrls");
+
 class ServiceError extends Error {
     constructor(message, statusCode) {
       super(message);
       this.statusCode = statusCode;
     }
 }
-/*
+
 const getPublicKey = async () => {
     try {
-      const response = await axios.get("http://localhost:4001/user-service/api/auth/get-public-key");
-      const publicKey = response.data;
-      console.log("Public Key:", publicKey);
-      return publicKey;
-    } catch (error) {
-      console.error("Failed to fetch public key:", error.message);
-      throw error;
-    }
-};
-*/
-const getPublicKey = async () => {
-    try {
-      const {data} = await axios.get("http://localhost:4001/user-service/api/auth/get-public-key");
+      const {data} = await axios.get(`${urls.userService}/user-service/api/auth/get-public-key`);
       console.log("Public key fetch response: ",data);
       const publicKey = data.publicKey;
       console.log("Public Key:", publicKey);
@@ -31,11 +21,11 @@ const getPublicKey = async () => {
       throw error;
     }
 };
+
 const getUser = async (id) => {
     try {
       console.log("Get User Request taken");
-      //const objectId = new mongoose.Types.ObjectId(id);  
-      const response = await axios.get(`http://localhost:4001/user-service/api/users/get-user/${id}`);
+      const response = await axios.get(`${urls.userService}/user-service/api/users/get-user/${id}`);
       const user = response.data;
       console.log("User: ", user);
       return user;
@@ -55,29 +45,7 @@ const getUser = async (id) => {
         ); 
     }
 }
-/*
-const getUser = async (id) => {
-    try {
-      const response = await axios.get(`http://localhost:4001/user-service/api/user/get-user/${id}`);
-      return response.data;
-    } catch (error) {
-      
-      if (error.response) {
-        const { status, data } = error.response;
-        throw new ServiceError(
-          data.message || "Service error",
-          status
-        );
-      }
-      
-      console.error("User Service unreachable:", error.message);
-      throw new ServiceError(
-        "Unable to contact to the Service",
-        502 
-      );
-    }
-  };
-*/
+
 const checkAuthorization = (roleOP) => {
     return async (req, res, next) => {
         try {
@@ -89,7 +57,6 @@ const checkAuthorization = (roleOP) => {
                     message: "Authorization token required"
                 });
             }
-
             
             const token = authorization.split(' ')[1];
             console.log("Token from client: ", token);
@@ -98,7 +65,6 @@ const checkAuthorization = (roleOP) => {
                     message: "Invalid authorization format. Use 'Bearer <token>'"
                 });
             }
-
             
             const public_key = await getPublicKey();
             if (!public_key) {
@@ -106,7 +72,6 @@ const checkAuthorization = (roleOP) => {
                     message: "Server configuration error"
                 });
             }
-
             
             let decoded;
             try {
@@ -126,18 +91,15 @@ const checkAuthorization = (roleOP) => {
                     message: "User not found"
                 });
             }
-
             
             req.user = user._id;
             req.role = user.role;
-
             
             if (roleOP === "admin" && req.role !== "admin") {
                 return res.status(403).json({
                     message: "Access denied. Admin privileges required"
                 });
             }
-
             
             next();
 
@@ -149,45 +111,7 @@ const checkAuthorization = (roleOP) => {
         }
     };
 };
-/*
-const checkAuthorization = async (req,res,next,roleOP) => {
-    const {authorization} = req.headers;
 
-    const public_key = await getPublicKey();
-
-    if(!authorization){
-        return res.status(401).json({
-            message  :"Authorization token required"
-        })
-    }
-
-    const token = authorization.split(" ")[1];
-    
-    try {
-        const { _id } = jwt.verify(token,public_key);
-
-        const user = await getUser(_id);
-
-        req.user = user._id;
-        req.role = user.role;
-
-        if(roleOP === "admin" && req.role !== "admin"){
-            return res.status(403).json({
-                message : "Access denied"
-            })
-        }
-        next();
-
-
-        
-    } catch (error) {
-        console.log(error);
-        return res.status(401).json({
-            message: "Request is not authorized"
-        })
-    }
-}
-*/
 module.exports = {
     checkAuthorization,
     getUser,

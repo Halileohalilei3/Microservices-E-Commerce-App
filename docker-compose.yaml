@@ -1,0 +1,151 @@
+version: '3.8'
+
+services:
+  # MongoDB Servisler
+  mongodb-user:
+    image: mongo:latest
+    container_name: mongodb-user
+    restart: always
+    volumes:
+      - mongodb-user-data:/data/db
+    networks:
+      - microservices-network
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: user-service-db
+
+  mongodb-product:
+    image: mongo:latest
+    container_name: mongodb-product
+    restart: always
+    volumes:
+      - mongodb-product-data:/data/db
+    networks:
+      - microservices-network
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: product-service-db
+
+  mongodb-menu:
+    image: mongo:latest
+    container_name: mongodb-menu
+    restart: always
+    volumes:
+      - mongodb-menu-data:/data/db
+    networks:
+      - microservices-network
+    ports:
+      - "27019:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: menu-service-db
+
+  mongodb-order:
+    image: mongo:latest
+    container_name: mongodb-order
+    restart: always
+    volumes:
+      - mongodb-order-data:/data/db
+    networks:
+      - microservices-network
+    ports:
+      - "27020:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: order-service-db
+
+  # Uygulama Servisleri
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    container_name: user-service
+    restart: always
+    depends_on:
+      - mongodb-user
+    networks:
+      - microservices-network
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+      - MONGO_URI=mongodb://root:rootpassword@mongodb-user:27017/user-service-db?authSource=admin
+      - JWT_PRIVATE_KEY=src/api/secrets/private.pem
+      - JWT_PUBLIC_KEY=src/api/secrets/public.pem
+      - NODE_ENV=development
+
+  product-service:
+    build:
+      context: .
+      dockerfile: product-service/Dockerfile
+    container_name: product-service
+    restart: always
+    depends_on:
+      - mongodb-product
+      - user-service
+    networks:
+      - microservices-network
+    ports:
+      - "4002:4002"
+    environment:
+      - PORT=4002
+      - MONGO_URI=mongodb://root:rootpassword@mongodb-product:27017/product-service-db?authSource=admin
+      - NODE_ENV=development
+
+  menu-service:
+    build:
+      context: .
+      dockerfile: menu-service/Dockerfile
+    container_name: menu-service
+    restart: always
+    depends_on:
+      - mongodb-menu
+      - user-service
+      - product-service
+    networks:
+      - microservices-network
+    ports:
+      - "4003:4003"
+    environment:
+      - PORT=4003
+      - MONGO_URI=mongodb://root:rootpassword@mongodb-menu:27017/menu-service-db?authSource=admin
+      - NODE_ENV=development
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    container_name: order-service
+    restart: always
+    depends_on:
+      - mongodb-order
+      - user-service
+      - menu-service
+    networks:
+      - microservices-network
+    ports:
+      - "4004:4004"
+    environment:
+      - PORT=4004
+      - MONGO_URI=mongodb://root:rootpassword@mongodb-order:27017/order-service-db?authSource=admin
+      - NODE_ENV=development
+
+# Ağlar
+networks:
+  microservices-network:
+    driver: bridge
+
+# Volumes
+volumes:
+  mongodb-user-data:
+  mongodb-product-data:
+  mongodb-menu-data:
+  mongodb-order-data:
