@@ -4,7 +4,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const {connectToDB,getDB} = require("./config/database");
-const {PORT,RATE_LIMIT} = require("../config/config");
+const {config} = require("./config/config");
 const expressSanitizer = require("express-sanitizer");
 const {adminProductOpsRouter} = require("./routes/adminProductOpsRoute");
 const {customerProductOpsRouter} = require("./routes/customerProductOpsRoute");
@@ -15,7 +15,7 @@ const app = express();
 app.use(helmet());
 app.use(cors())
 
-app.use(rateLimit(RATE_LIMIT));
+app.use(rateLimit(config.RATE_LIMIT));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -36,9 +36,9 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'OK', db: getDB()?.readyState === 1 ? 'connected' : 'disconnected' });
 });
 
-app.use("product-service/api/admin",adminProductOpsRouter);
-app.use("product-service/api/customer",customerProductOpsRouter);
-app.use("product-service/inter-service",serviceProductInternalRouter);
+app.use("/product-service/api/admin",adminProductOpsRouter);
+app.use("/product-service/api/customer",customerProductOpsRouter);
+app.use("/product-service/inter-service",serviceProductInternalRouter);
 
 app.use((req,res) => {
     res.status(404).json({
@@ -53,6 +53,6 @@ app.use((err, req, res) => {
     }); 
 });
 
-app.listen(PORT, () => {
-    console.log(`Product service running on http://localhost:${PORT}`);
+app.listen(config.PORT, () => {
+    console.log(`Product service running on http://localhost:${config.PORT}`);
 });

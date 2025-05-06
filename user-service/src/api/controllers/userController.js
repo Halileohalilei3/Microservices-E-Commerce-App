@@ -1,4 +1,5 @@
 const {User} = require("../models/userModel");
+const mongoose = require("mongoose");
 
 const addUserAddress = async (req,res) => {
     try {
@@ -108,15 +109,17 @@ const addPhoneNumber = async (req,res) => {
         });
     }
 }
-
+/*
 const sendUser = async (req,res) => {
     const { id } = req.params;
+    console.log("Received get user id from service: ",id)
     try {
-      const user = await User.findById(id).lean().select("_id username firstName lastName role");
+      const _id = mongoose.Types.ObjectId(id);
+      const user = await User.findById(_id).select("_id username firstName lastName role");
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       } 
-  
+      console.log("User for service is found: ",user._id);
       return res.status(200).json(user);
     } catch (err) {
       return res.status(500).json({ 
@@ -124,6 +127,42 @@ const sendUser = async (req,res) => {
       });
     }
 }
+*/
+const sendUser = async (req, res) => {
+    const { id } = req.params;
+    
+    console.log("Received get user id from service:", id);
+
+    try {
+        // 1. Validate ID format
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({ 
+                message: "Invalid user ID format" 
+            });
+        }
+
+        // 2. Query user (no need for manual ObjectId conversion)
+        const user = await User.findById(id)
+            .select("_id username firstName lastName role")
+            .lean();  // Convert to plain JS object
+
+        if (!user) {
+            console.log(`User not found with ID: ${id}`);
+            return res.status(404).json({ 
+                message: "User not found" 
+            });
+        }
+
+        console.log("Found user:", user._id);
+        return res.status(200).json(user);
+
+    } catch (err) {
+        console.error("Error fetching user:", err);
+        return res.status(500).json({ 
+            message: "Failed to fetch user",
+        });
+    }
+};
 module.exports = {
     addPhoneNumber,
     addUserAddress,

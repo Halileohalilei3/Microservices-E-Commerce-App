@@ -1,5 +1,5 @@
 const {Product,Beverage,Meal} = require("../models/productModel");
-const {getUser} = require("../middleware/getUser");
+const {getUser} = require("../middleware/checkAuth");
 
 const createProduct = async (req, res) => {
     try {
@@ -86,7 +86,7 @@ const getProductDetails = async (req,res) => {
         if(product.__t === "mealProduct"){
             productdetail = {
                 _id : product._id,
-                addedBy : user.username,
+                addedBy : adder.username,
                 productName : product.productName,
                 description : product.description,
                 productCategory : product.productCategory,

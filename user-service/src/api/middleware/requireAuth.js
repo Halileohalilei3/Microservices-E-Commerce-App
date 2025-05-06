@@ -21,7 +21,7 @@ const requireAuth = async (req,res,next) => {
         //const {_id} = jwt.verify(token,config.JWT_PRIVATE_KEY);
         const { userId, role } = jwt.verify(token, config.JWT_PUBLIC_KEY, { 
             algorithms: ['RS256'],
-            issuer: 'http://localhost:3001/user-service',
+            issuer: 'http://localhost:4001/user-service',
             audience: 'internal-services'
         });
         //Finding the user with given id taken from the token AND assigning it to the req parameters 

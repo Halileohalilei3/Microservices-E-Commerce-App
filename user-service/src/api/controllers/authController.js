@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const {config} = require("../config/config");
+const path = require("path");
+const fs = require("fs");
 //const jose = require("jose");
 
 
@@ -156,8 +158,25 @@ const getJWKS = async (req, res) => {
     }
 };
 */
+
+const sendPublicKey = (req, res) => {
+    const publicKeyPath = path.join(__dirname, '../secrets/public.pem');
+    console.log('Resolved public key path:', publicKeyPath);
+    let publicKey
+    try {
+      publicKey = fs.readFileSync(
+         publicKeyPath,
+        'utf8'
+      );
+      console.log("Public key loaded successfully")
+      return res.json({ publicKey });
+    } catch (err) {
+      console.log("Failed to load public key: ", err.message);
+      return res.status(500).json({ message: "Failed to load public key" });
+    }
+};
 module.exports = {
     signInHandler,
     signUpHandler,
-    //getJWKS
+    sendPublicKey
 }

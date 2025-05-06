@@ -13,10 +13,6 @@ const productSchema = new Schema({
         required : true,
         trim :true
     },
-    productType : {
-        type : String,
-        required : true
-    },
     price : {
         type : Double,
         required : true

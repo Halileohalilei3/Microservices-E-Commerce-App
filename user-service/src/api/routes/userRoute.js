@@ -10,7 +10,7 @@ const limiter = rateLimit({
     message: 'Too many attempts. Please try again later.'
 });
 
-userRouter.use(requireAuth);
+//userRouter.use(requireAuth);
 
 userRouter.patch("/add-phone-number",addPhoneNumber);
 userRouter.patch("/add-address",addUserAddress);
